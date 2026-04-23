@@ -1,8 +1,10 @@
-[phases.setup]
-nixPkgs = ["python311", "gcc"]
-
-[phases.install]
-cmds = ["pip install -r requirements.txt"]
-
-[start]
-cmd = "gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+{% extends 'base.html' %}
+{% block title %}Página não encontrada{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="display-1 text-muted">404</h1>
+  <h4>Página não encontrada</h4>
+  <p class="text-muted">O endereço que você tentou acessar não existe.</p>
+  <a href="{{ url_for('index') }}" class="btn btn-ifmt">Voltar ao início</a>
+</div>
+{% endblock %}
