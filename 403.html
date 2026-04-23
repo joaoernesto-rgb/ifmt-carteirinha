@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Verificação de Carteirinha — IFMT{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5 text-center">
+    {% if valid %}
+    <div class="verify-card valid">
+      <div class="verify-icon valid mb-3"><i class="bi bi-patch-check-fill"></i></div>
+      <h3 class="fw-bold text-success">Carteirinha Válida!</h3>
+      <p class="text-muted">Esta carteirinha foi verificada e é autêntica.</p>
+
+      <div class="verify-photo mx-auto my-3">
+        <img src="{{ card.photo_url }}" alt="Foto de {{ card.student.name }}">
+      </div>
+
+      <table class="table table-bordered text-start mt-3">
+        <tr><th class="bg-light" width="40%">Nome</th><td class="fw-bold">{{ card.student.name }}</td></tr>
+        <tr><th class="bg-light">Matrícula</th><td>{{ card.registration_number }}</td></tr>
+        <tr><th class="bg-light">Curso</th><td>{{ card.course }}</td></tr>
+        <tr><th class="bg-light">Campus</th><td>{{ card.campus }}</td></tr>
+        <tr><th class="bg-light">Semestre</th><td>{{ card.semester }}</td></tr>
+        <tr><th class="bg-light">Validade</th><td>{{ card.validity_year }}</td></tr>
+      </table>
+
+      <div class="alert alert-success mt-3 text-start">
+        <i class="bi bi-shield-check me-2"></i>
+        Verificado pelo sistema IFMT em {{ now.strftime('%d/%m/%Y %H:%M') }}
+      </div>
+    </div>
+    {% else %}
+    <div class="verify-card invalid">
+      <div class="verify-icon invalid mb-3"><i class="bi bi-x-circle-fill"></i></div>
+      <h3 class="fw-bold text-danger">Carteirinha Inválida</h3>
+      <p class="text-muted">
+        Este QR Code não corresponde a nenhuma carteirinha aprovada em nosso sistema.
+        Pode ter expirado, sido cancelada ou ser uma falsificação.
+      </p>
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        Em caso de suspeita de fraude, entre em contato com a coordenação do campus.
+      </div>
+      <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-house me-1"></i>Ir para o início
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

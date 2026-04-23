@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block title %}Analisar Solicitação — IFMT{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary btn-sm mb-4">
+  <i class="bi bi-arrow-left me-1"></i>Voltar ao painel
+</a>
+
+<div class="row g-4">
+  <!-- Left: Student Info -->
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-4"><i class="bi bi-person-badge me-2 text-success"></i>Dados do Estudante</h5>
+
+        <div class="text-center mb-4">
+          <div class="review-photo mx-auto">
+            <img src="{{ card.photo_url }}" alt="Foto">
+          </div>
+          <div class="mt-2">
+            <span class="badge bg-{{ card.status_color }} px-3 py-2 fs-6">{{ card.status_label }}</span>
+          </div>
+        </div>
+
+        <table class="table table-sm">
+          <tr><th class="text-muted fw-normal" width="40%">Nome</th><td class="fw-bold">{{ card.student.name }}</td></tr>
+          <tr><th class="text-muted fw-normal">E-mail</th><td>{{ card.student.email }}</td></tr>
+          {% if card.student.cpf %}<tr><th class="text-muted fw-normal">CPF</th><td>{{ card.student.cpf }}</td></tr>{% endif %}
+          <tr><th class="text-muted fw-normal">Matrícula</th><td><strong>{{ card.registration_number }}</strong></td></tr>
+          <tr><th class="text-muted fw-normal">Curso</th><td>{{ card.course }}</td></tr>
+          <tr><th class="text-muted fw-normal">Campus</th><td>{{ card.campus }}</td></tr>
+          <tr><th class="text-muted fw-normal">Semestre</th><td>{{ card.semester }}</td></tr>
+          {% if card.birth_date %}<tr><th class="text-muted fw-normal">Nascimento</th><td>{{ card.birth_date }}</td></tr>{% endif %}
+          <tr><th class="text-muted fw-normal">Solicitado em</th><td>{{ card.created_at.strftime('%d/%m/%Y %H:%M') }}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Actions -->
+  <div class="col-lg-7">
+    <!-- Preview carteirinha mockup -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-card-image me-2 text-success"></i>Pré-visualização</h5>
+        <div class="card-preview">
+          <div class="card-preview-header">
+            <span class="fw-bold" style="font-size:.75rem">INSTITUTO FEDERAL DE MATO GROSSO</span><br>
+            <span style="font-size:.65rem;opacity:.85">CARTEIRA ESTUDANTIL</span>
+          </div>
+          <div class="card-preview-body">
+            <div class="card-preview-photo">
+              <img src="{{ card.photo_url }}" alt="">
+            </div>
+            <div class="card-preview-info">
+              <div class="fw-bold" style="font-size:.85rem">{{ card.student.name.upper() }}</div>
+              <div class="text-muted" style="font-size:.65rem">NOME</div>
+              <div class="fw-bold mt-1" style="font-size:.8rem">{{ card.registration_number }}</div>
+              <div class="text-muted" style="font-size:.65rem">MATRÍCULA</div>
+              <div class="fw-bold mt-1" style="font-size:.75rem">{{ card.course }}</div>
+              <div class="text-muted" style="font-size:.65rem">CURSO</div>
+            </div>
+            <div class="card-preview-qr">
+              <i class="bi bi-qr-code" style="font-size:2rem;color:#006633"></i>
+              <div style="font-size:.5rem;text-align:center;margin-top:2px">QR Code</div>
+            </div>
+          </div>
+          <div class="card-preview-footer">
+            <span>Campus: {{ card.campus }}</span>
+            <span>Validade: {{ card.validity_year or (now.year + 1) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if card.status == 'pending' %}
+    <!-- Approve Form -->
+    <div class="card border-success border-0 shadow-sm mb-3">
+      <div class="card-body p-4">
+        <h6 class="fw-bold text-success mb-3"><i class="bi bi-check-circle-fill me-2"></i>Aprovar Solicitação</h6>
+        <form method="POST" action="{{ url_for('admin_approve', card_id=card.id) }}">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Validade da carteirinha</label>
+            <select name="validity_year" class="form-select">
+              {% for y in range(now.year, now.year + 4) %}
+              <option value="{{ y }}" {{ 'selected' if y == now.year + 1 }}>{{ y }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-success btn-lg w-100"
+                  onclick="return confirm('Confirmar aprovação desta carteirinha?')">
+            <i class="bi bi-check-circle-fill me-2"></i>Aprovar e Emitir Carteirinha
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Reject Form -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h6 class="fw-bold text-danger mb-3"><i class="bi bi-x-circle-fill me-2"></i>Rejeitar Solicitação</h6>
+        <form method="POST" action="{{ url_for('admin_reject', card_id=card.id) }}">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Motivo da rejeição</label>
+            <textarea name="reason" class="form-control" rows="3"
+                      placeholder="Ex: Foto inválida, dados incorretos, matrícula não encontrada..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-danger w-100"
+                  onclick="return confirm('Confirmar rejeição desta solicitação?')">
+            <i class="bi bi-x-circle me-2"></i>Rejeitar Solicitação
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {% elif card.status == 'approved' %}
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="alert alert-success">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          Aprovada por <strong>{{ card.approved_by.name }}</strong> em {{ card.updated_at.strftime('%d/%m/%Y') }}
+        </div>
+        <a href="{{ url_for('admin_download_pdf', card_id=card.id) }}" class="btn btn-success btn-lg w-100">
+          <i class="bi bi-download me-2"></i>Baixar Carteirinha PDF
+        </a>
+        <a href="{{ url_for('verify', token=card.token) }}" class="btn btn-outline-secondary w-100 mt-2" target="_blank">
+          <i class="bi bi-qr-code me-2"></i>Ver página de verificação
+        </a>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-danger">
+      <i class="bi bi-x-circle-fill me-2"></i>
+      Rejeitada. {{ card.rejection_reason }}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

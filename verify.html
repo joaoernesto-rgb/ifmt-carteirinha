@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Carteirinha Estudantil IFMT{% endblock %}
+{% block content %}
+
+<div class="hero-section text-center py-5">
+  <div class="hero-icon mb-3"><i class="bi bi-mortarboard-fill"></i></div>
+  <h1 class="display-5 fw-bold text-dark">Carteirinha Estudantil Digital</h1>
+  <p class="lead text-muted mx-auto" style="max-width:560px">
+    Solicite sua carteirinha de estudante do IFMT de forma rápida e segura. 
+    Envie seus dados e aguarde a validação do administrador.
+  </p>
+  <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+    <a href="{{ url_for('register') }}" class="btn btn-ifmt btn-lg px-5">
+      <i class="bi bi-person-plus-fill me-2"></i>Quero minha carteirinha
+    </a>
+    <a href="{{ url_for('login') }}" class="btn btn-outline-secondary btn-lg px-4">
+      <i class="bi bi-box-arrow-in-right me-2"></i>Já tenho cadastro
+    </a>
+  </div>
+</div>
+
+<div class="row g-4 mt-3">
+  <div class="col-md-3 col-6">
+    <div class="feature-card text-center p-4">
+      <div class="feature-icon mb-3"><i class="bi bi-person-fill-check"></i></div>
+      <h6 class="fw-bold">1. Cadastre-se</h6>
+      <p class="text-muted small mb-0">Crie sua conta com e-mail e senha</p>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="feature-card text-center p-4">
+      <div class="feature-icon mb-3"><i class="bi bi-camera-fill"></i></div>
+      <h6 class="fw-bold">2. Envie seus dados</h6>
+      <p class="text-muted small mb-0">Preencha o formulário e faça upload da foto</p>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="feature-card text-center p-4">
+      <div class="feature-icon mb-3"><i class="bi bi-shield-check"></i></div>
+      <h6 class="fw-bold">3. Validação ADM</h6>
+      <p class="text-muted small mb-0">O administrador revisa e aprova sua solicitação</p>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="feature-card text-center p-4">
+      <div class="feature-icon mb-3"><i class="bi bi-qr-code"></i></div>
+      <h6 class="fw-bold">4. Baixe o PDF</h6>
+      <p class="text-muted small mb-0">Carteirinha com QR Code de segurança pronta!</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

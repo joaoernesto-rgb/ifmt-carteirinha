@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Cadastro — IFMT Carteirinha{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="auth-card">
+      <div class="text-center mb-4">
+        <div class="auth-icon"><i class="bi bi-person-plus-fill"></i></div>
+        <h4 class="fw-bold mt-2">Criar conta de estudante</h4>
+        <p class="text-muted small">Preencha os dados para se cadastrar</p>
+      </div>
+      <form method="POST" novalidate>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Nome completo <span class="text-danger">*</span></label>
+          <input type="text" name="name" class="form-control" placeholder="Seu nome completo" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">E-mail <span class="text-danger">*</span></label>
+          <input type="email" name="email" class="form-control" placeholder="seu@email.com" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">CPF</label>
+          <input type="text" name="cpf" class="form-control" placeholder="000.000.000-00" maxlength="14" id="cpfInput">
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <label class="form-label fw-semibold">Senha <span class="text-danger">*</span></label>
+            <input type="password" name="password" class="form-control"
+                   placeholder="Mín. 6 caracteres" minlength="6" required>
+          </div>
+          <div class="col-6">
+            <label class="form-label fw-semibold">Confirmar senha <span class="text-danger">*</span></label>
+            <input type="password" name="password2" class="form-control" placeholder="Repita a senha" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-ifmt btn-lg w-100">
+          <i class="bi bi-check-circle me-2"></i>Criar minha conta
+        </button>
+      </form>
+      <hr class="my-4">
+      <p class="text-center text-muted small">
+        Já tem conta? <a href="{{ url_for('login') }}" class="text-success fw-bold">Entrar</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const cpf = document.getElementById('cpfInput');
+cpf.addEventListener('input', function() {
+  let v = this.value.replace(/\D/g, '');
+  if(v.length <= 11) {
+    v = v.replace(/(\d{3})(\d)/, '$1.$2');
+    v = v.replace(/(\d{3})(\d)/, '$1.$2');
+    v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  }
+  this.value = v;
+});
+</script>
+{% endblock %}
